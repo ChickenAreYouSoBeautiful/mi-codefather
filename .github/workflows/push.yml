@@ -35,7 +35,7 @@ jobs:
 
       # 打包
       - name: 打包
-        run: set NODE_OPTIONS=--openssl-legacy-provider --max_old_space_size=8192 && vuepress build .
+        run: vuepress build .
 
       # 上传华为云
       - name: 发布项目
@@ -43,7 +43,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           ARGS: "-rlgoDzvc -i --delete"
-          SOURCE: "dist/"
+          SOURCE: ".vuepress/dist/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
