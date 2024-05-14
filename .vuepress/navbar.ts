@@ -13,4 +13,8 @@ export default [
         text: "编程工具",
         link: '/编程工具/'
     },
+    {
+        text: "项目笔记",
+        link: '/项目笔记/'
+    },
 ] as NavItem[];
