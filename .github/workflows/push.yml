@@ -27,7 +27,7 @@ jobs:
         # 使用action库  actions/setup-node安装node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
 
       # 安装依赖
       - name: 安装依赖
@@ -35,7 +35,7 @@ jobs:
 
       # 打包
       - name: 打包
-        run: npm run build
+        run: set NODE_OPTIONS=--openssl-legacy-provider --max_old_space_size=8192 && vuepress build .
 
       # 上传华为云
       - name: 发布项目
