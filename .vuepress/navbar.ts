@@ -6,6 +6,10 @@ export default [
         link: '/学习路线/'
     },
     {
+        text: "文档",
+        link: '/文档/'
+    },
+    {
         text: "学习笔记",
         link: '/学习笔记/'
     },
@@ -16,5 +20,9 @@ export default [
     {
         text: "项目笔记",
         link: '/项目笔记/'
+    },
+    {
+        text: "运维",
+        link: '/运维/'
     },
 ] as NavItem[];
