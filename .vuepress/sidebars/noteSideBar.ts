@@ -8,6 +8,10 @@ export default [
             "ElasticSearch by 睿智.md",
             "MySQL by 睿智.md",
             "JVM by 睿智.md",
+            "上传jar包到maven公共仓库.md",
+            "网络编程.md",
+            "函数式编程.md",
+            "RabbitMQ.md",
         ],
     },
 ];

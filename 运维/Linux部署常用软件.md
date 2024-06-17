@@ -365,25 +365,6 @@ docker run -p 8082:8082 -d  friend-backendv0.0.1
 
 用户输入网址 => 域名解析服务器 => 服务器 => nginx接收请求  转发到后端项目
 
-# 连接超时问题
-
-项目启动一阵后报错
-
-Can not create registry service-discovery-registry://120.46.54.54:8848/org.apache.dubbo.registry.RegistryService?REGISTRY_CLUSTER=nacos&application=miapi_backend&dubbo=2.0.2&executor-management-mode=isolation&file-cache=true&interface=org.apache.dubbo.registry.RegistryService&pid=10960&qos.enable=true®istry=nacos&release=3.
-
-
-
-# maven上传jar包到远程仓库
-
-将jar包安装到本地仓库
-
-~~~bash
-mvn install:install-file -DgroupId=xxx -DartifactId=xxx -Dversion=xxx -Dfile= xxx.jar -Dpackaging=jar
-~~~
-
-mvn install:install-file -DgroupId=‘com.mi’ -DartifactId=‘miapi_client_sdk -Dversion=0.0.4 -Dfile= D:\starProject\APOpenPlatform\miApi_backend\miapi_client_sdk\target\miapi_client_sdk-0.0.4.jar -Dpackaging=jar -
-
-
 
 # SDK优化
 

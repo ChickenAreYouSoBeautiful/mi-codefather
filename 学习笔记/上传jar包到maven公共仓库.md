@@ -4,7 +4,7 @@
 
 [Register to Publish Via the Central Portal - Documentation (sonatype.org)](https://central.sonatype.org/register/central-portal/#prerequisites) 
 
-### 生成用户Token名称和密码
+## 生成用户Token名称和密码
 
 打开网址：
 
@@ -22,11 +22,17 @@ Sign in 登录（推荐github授权登录，比较方便）
 	<password>InGwB3PvIK1ja5MXnL15cbSQN3qaJEOZUhWf74hQrymN</password>
 </server>
 
-### 创建GPG密钥
+## 创建GPG密钥
 
 确保您已经安装了GPG工具。如果没有，请访问[GnuPG官方网站](https://gnupg.org/download/)下载并安装。 
 
-生成密钥
+推荐下载
+
+![image](https://ChickenAreYouSoBeautiful.github.io/picx-images-hosting/上传jar包到maven仓库/image.8vmrqckowz.jpg)
+
+使用可视化工具或使用命令行生成
+
+命令行生成密钥（到bin目录下执行命令）
 
 ​	生成时会让你指定key，邮箱地址，**密码**需要记录下来，后面会用到。
 
@@ -52,7 +58,7 @@ gpg --keyserver keyserver.ubuntu.com --send-keys YOUR_KEY_ID
 
 设置maven的settings配置
 
-### 配置maven
+## 配置maven
 
 ​	配置maven的settings.xml配置文件（文件位置在conf目录下）。
 
@@ -66,7 +72,7 @@ gpg --keyserver keyserver.ubuntu.com --send-keys YOUR_KEY_ID
 </server>
 ~~~
 
-### 配置pom.xml
+## 配置pom.xml
 
 ~~~xml
  <properties>
@@ -198,7 +204,7 @@ gpg --keyserver keyserver.ubuntu.com --send-keys YOUR_KEY_ID
     </build>
 ~~~
 
-### 部署
+## 部署
 
 执行命令
 
@@ -222,7 +228,8 @@ mvn deploy
 
 mvn dependency:get -DrepoUrl=http://repo.maven.apache.org/maven2/ -Dartifact="org.sonatype.plugins:nexus-staging-maven-plugin:1.6.7"
 
-解决2： 更新依赖，视网速情况5-10min![1718346177752](C:\Users\mi11\AppData\Local\Temp\1718346177752.png)
+解决2： 更新依赖，视网速情况5-10min
+![1718346177752](https://ChickenAreYouSoBeautiful.github.io/picx-images-hosting/上传jar包到maven仓库/1718346177752.6bgxdpone7.jpg)
 
 ### 执行mvn deploy 报错 401
 
@@ -230,4 +237,4 @@ mvn dependency:get -DrepoUrl=http://repo.maven.apache.org/maven2/ -Dartifact="or
 
 2. 生成的用户token是否有效。（不确定建议清理token后，重新生成配置。）
 
-   ![1718347731326](C:\Users\mi11\AppData\Local\Temp\1718347731326.png)
+   ![1718347731326](https://ChickenAreYouSoBeautiful.github.io/picx-images-hosting/上传jar包到maven仓库/1718347731326.6pnd4kxnrr.jpg)
