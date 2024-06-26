@@ -7,7 +7,7 @@ export default [
             "Linux部署常用软件.md",
             "跨域问题.md",
             "服务器运存不足问题.md",
-
+            "GithubAction使用.md"
         ],
     },
 ];
