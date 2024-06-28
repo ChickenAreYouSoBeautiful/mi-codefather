@@ -12,6 +12,7 @@ export default [
             "网络编程.md",
             "函数式编程.md",
             "RabbitMQ.md",
+            "Etcd学习笔记.md",
         ],
     },
 ];
