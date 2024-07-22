@@ -13,6 +13,7 @@ export default [
             "函数式编程.md",
             "RabbitMQ.md",
             "Etcd学习笔记.md",
+            "Retry-guava重试.md",
         ],
     },
 ];

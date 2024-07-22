@@ -11,6 +11,7 @@
 - [上传jar包到maven公共仓库 by 睿智](上传jar包到maven公共仓库.md)
 - [网络编程 by 睿智](网络编程.md)
 - [ETCD学习笔记 by 睿智](Etcd学习笔记.md)
+- [Retry-guava重试.md](Retry-guava重试.md)
 
 
 
