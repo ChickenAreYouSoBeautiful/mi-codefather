@@ -14,6 +14,7 @@ export default [
             "RabbitMQ.md",
             "Etcd学习笔记.md",
             "Retry-guava重试.md",
+            "JUC并发编程.md",
         ],
     },
 ];
