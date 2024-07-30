@@ -6,6 +6,6 @@
 
 ## 本文内容
 - [idea快捷键收据 by 睿智.md](idea快捷键收集%20by%20睿智.md)
-- [MarkDown狂放教程](https://markdown.com.cn/)
+- [MarkDown官方教程](https://markdown.com.cn/)
 
 
