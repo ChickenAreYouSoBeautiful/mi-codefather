@@ -5,7 +5,8 @@ export default [
         collapsable: false,
         children: [
             "api开放平台 by 睿智.md",
-            "手写Rpc.md",
+            "RPC框架.md",
+            "聚合搜索平台.md"
         ],
     },
 ];
