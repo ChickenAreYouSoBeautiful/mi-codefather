@@ -313,6 +313,253 @@ POST book/_update/1
 DELETE book/_doc/1      # 删除id 为1 的文档
 ```
 
+# 分词器
+
+Es自带的分词器不是很适配中文，但Es的分词器可以自定义并且支持插件。
+
+下载ik分词器
+
+[infinilabs/analysis-ik: 🚌 The IK Analysis plugin integrates Lucene IK analyzer into Elasticsearch and OpenSearch, support customized dictionary. (github.com)](https://github.com/infinilabs/analysis-ik)
+
+尝试之后发现有时分词的效果不是我们想要的效果，可以通过配置词典来辅助分词。分词时会去看看词典里是否有这个词如果有就可以进行划分
+
+# 打分机制
+
+Es查询出的数据的顺序是按照分值的高低来进行排序的，得分越高越靠前。
+
+当内容与搜索词越相似分值越高。
+
+例如：
+
+我是一个小黑子
+
+我是一个黑子
+
+当我们搜索黑子时第二个的分值会比第一个的高，因为第二个更短
+
+# Java客户端
+
+- 官方提供的Java客户端API调用
+
+配置方便，更新迭代快
+
+- SpringBoot Data ElasticSearch调用
+
+配置更方便，可根据方法名生成实现，也支持复杂的聚合搜索。
+
+对比版本7.17对应SpringBoot Data ElasticSearch 4.4.X
+
+## 配置yml
+
+```
+spring:
+  elasticsearch:
+    uris: http://localhost:9200
+    username: root
+    password: 123456
+```
+
+## 创建对应ES中索引的实体类
+
+例如：
+
+```java
+/**
+ * 帖子 ES 包装类
+ *
+* @author mi11
+ **/
+// todo 取消注释开启 ES（须先配置 ES）
+@Document(indexName = "post")
+@Data
+public class PostEsDTO implements Serializable {
+
+    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+    /**
+     * id
+     */
+    @Id
+    private Long id;
+
+    /**
+     * 标题
+     */
+    private String title;
+
+    /**
+     * 内容
+     */
+    private String content;
+
+    /**
+     * 标签列表
+     */
+    private List<String> tags;
+
+    /**
+     * 点赞数
+     */
+    private Integer thumbNum;
+
+    /**
+     * 收藏数
+     */
+    private Integer favourNum;
+
+    /**
+     * 创建用户 id
+     */
+    private Long userId;
+
+    /**
+     * 创建时间
+     */
+    @Field(index = false, store = true, type = FieldType.Date, format = {}, pattern = DATE_TIME_PATTERN)
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @Field(index = false, store = true, type = FieldType.Date, format = {}, pattern = DATE_TIME_PATTERN)
+    private Date updateTime;
+
+    /**
+     * 是否删除
+     */
+    private Integer isDelete;
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 对象转包装类
+     *
+     * @param post
+     * @return
+     */
+    public static PostEsDTO objToDto(Post post) {
+        if (post == null) {
+            return null;
+        }
+        PostEsDTO postEsDTO = new PostEsDTO();
+        BeanUtils.copyProperties(post, postEsDTO);
+        String tagsStr = post.getTags();
+        if (StringUtils.isNotBlank(tagsStr)) {
+            postEsDTO.setTags(JSONUtil.toList(tagsStr, String.class));
+        }
+        return postEsDTO;
+    }
+
+    /**
+     * 包装类转对象
+     *
+     * @param postEsDTO
+     * @return
+     */
+    public static Post dtoToObj(PostEsDTO postEsDTO) {
+        if (postEsDTO == null) {
+            return null;
+        }
+        Post post = new Post();
+        BeanUtils.copyProperties(postEsDTO, post);
+        List<String> tagList = postEsDTO.getTags();
+        if (CollUtil.isNotEmpty(tagList)) {
+            post.setTags(JSONUtil.toJsonStr(tagList));
+        }
+        return post;
+    }
+}
+
+```
+
+
+
+## 继承ElasticsearchRepository调用
+
+提供了简单的crud方法，我们也可以按照他的方法名规范来写接口，框架会帮我们自动实现。十分便捷，适用于简单查询场景。
+
+```java
+public interface PostEsDao extends ElasticsearchRepository<PostEsDTO, Long> {
+
+    /**
+     * 根据用户名查询
+     * @param userId
+     * @return
+     */
+    List<PostEsDTO> findByUserId(Long userId);
+
+    /**
+     * 根据id和用户名查询
+     * @param id 
+     * @param userId
+     * @return
+     */
+    List<PostEsDTO> findByIdAndUserId(Long id,Long userId);
+}
+```
+
+## 通过ElasticsearchRestTemplate调用
+
+类似于Mybatis的queryWapper可以build各种条件进行查询，十分灵活，适用于复杂查询的场景
+
+```java
+  boolQueryBuilder.filter(QueryBuilders.termQuery("isDelete", 0));
+        if (id != null) {
+            boolQueryBuilder.filter(QueryBuilders.termQuery("id", id));
+        }
+        if (notId != null) {
+            boolQueryBuilder.mustNot(QueryBuilders.termQuery("id", notId));
+        }
+        if (userId != null) {
+            boolQueryBuilder.filter(QueryBuilders.termQuery("userId", userId));
+        }
+        // 必须包含所有标签
+        if (CollectionUtils.isNotEmpty(tagList)) {
+            for (String tag : tagList) {
+                boolQueryBuilder.filter(QueryBuilders.termQuery("tags", tag));
+            }
+        }
+        // 包含任何一个标签即可
+        if (CollectionUtils.isNotEmpty(orTagList)) {
+            BoolQueryBuilder orTagBoolQueryBuilder = QueryBuilders.boolQuery();
+            for (String tag : orTagList) {
+                orTagBoolQueryBuilder.should(QueryBuilders.termQuery("tags", tag));
+            }
+            orTagBoolQueryBuilder.minimumShouldMatch(1);
+            boolQueryBuilder.filter(orTagBoolQueryBuilder);
+        }
+        // 按关键词检索
+        if (StringUtils.isNotBlank(searchText)) {
+            boolQueryBuilder.should(QueryBuilders.matchQuery("title", searchText));
+            boolQueryBuilder.should(QueryBuilders.matchQuery("description", searchText));
+            boolQueryBuilder.should(QueryBuilders.matchQuery("content", searchText));
+            boolQueryBuilder.minimumShouldMatch(1);
+        }
+        // 按标题检索
+        if (StringUtils.isNotBlank(title)) {
+            boolQueryBuilder.should(QueryBuilders.matchQuery("title", title));
+            boolQueryBuilder.minimumShouldMatch(1);
+        }
+        // 按内容检索
+        if (StringUtils.isNotBlank(content)) {
+            boolQueryBuilder.should(QueryBuilders.matchQuery("content", content));
+            boolQueryBuilder.minimumShouldMatch(1);
+        }
+        // 排序
+        SortBuilder<?> sortBuilder = SortBuilders.scoreSort();
+        if (StringUtils.isNotBlank(sortField)) {
+            sortBuilder = SortBuilders.fieldSort(sortField);
+            sortBuilder.order(CommonConstant.SORT_ORDER_ASC.equals(sortOrder) ? SortOrder.ASC : SortOrder.DESC);
+        }
+        // 分页
+        PageRequest pageRequest = PageRequest.of((int) current, (int) pageSize);
+        // 构造查询
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
+                .withPageable(pageRequest).withSorts(sortBuilder).build();
+        SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
+        
+```
+
 # ElasticSearch的各种查询
 
 ### term&terms查询(完全匹配查询不分词）
