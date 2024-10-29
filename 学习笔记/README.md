@@ -13,6 +13,11 @@
 - [ETCD学习笔记 by 睿智](Etcd学习笔记.md)
 - [Retry-guava重试.md](Retry-guava重试.md)
 - [JUC并发编程.md](JUC并发编程.md)
+- [RabbitMQ](RabbitMQ.md)
+- [Redis](Redis实现UV统计HyperLogLog.md)
+- [explain使用](explain使用.md)
+- [函数式编程](函数式编程.md)
+- [Retry-guava重试](Retry-guava重试.md)
 
 
 
